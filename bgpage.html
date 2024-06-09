@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="bgpage.css">
+      <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+   </head>
+   <body>
+      <div class="img">
+         <div class="container">
+      <div class="btn">
+         <span class="fas fa-bars"></span>
+      </div>
+      <nav class="sidebar">
+         <div class="text">
+            Moodle
+         </div>
+         <ul>
+            <li class="active"><a href="dashboard.html">Dashboard</a></li>
+            <li>
+               <a href="#" class="feat-btn">Files
+               <span class="fas fa-caret-down first"></span>
+               </a>
+               <ul class="feat-show">
+                  <li><a href="insert.html">Insert</a></li>
+                  <li><a href="update.html">update</a></li>
+               </ul>
+            </li>
+            <li><a href="OVERVIEW.pdf.pdf">Overview</a></li>
+            <li><a href="npp_para.html">Parameter</a></li>
+            <li><a href="alarm.html">Alarm</a></li>
+            <li>
+               <a href="#" class="serv-btn">Services
+               <span class="fas fa-caret-down second"></span>
+               </a>
+               <ul class="serv-show">
+                  <li><a href="Appdesign.pdf">App Design</a></li>
+                  <li><a href="Webdesign.pdf">Web Design</a></li>
+               </ul>
+            </li>
+            <li><a href="help.html">Help!</a></li>
+            <li><a href="print.html">Print</a></li>
+            <li><a href="feedback.html">Feedback</a></li>
+         </ul>
+      </nav>
+      <div class="content">
+         <div class="header">
+            NPP Update System
+         </div>
+         <p>
+            NPCIL
+         </p>
+      </div>
+      <div class="cards-container">
+         <div class="cardbody">
+           <img src="chairman.png" alt="Image 1">
+           <h4>Chairman of NPCIL</h4>
+           <p class="first-paragraph">NPCIL, founded in 1987, is India's premier governmental entity dedicated to harnessing nuclear energy for power generation. Specializing in the design, construction, and operation of nuclear power plants, NPCIL ensures the country's energy security while adhering to stringent safety protocols and international standards.With a commitment to innovation and sustainability, NPCIL contributes significantly to India's clean energy initiatives and technological advancements in the nuclear sector, solidifying its pivotal role in shaping the nation's energy future.</p>
+           <p class="second-paragraph">NPCIL, a vital player in India's energy landscape, has consistently demonstrated its commitment to sustainable development and technological advancement in the nuclear sector. With a focus on innovation and safety, NPCIL has spearheaded the nation's nuclear power generation capabilities, ensuring a reliable and clean source of energy for the growing demands of India's economy. By adhering to stringent international standards and fostering collaborations with global nuclear organizations, NPCIL not only enhances India's energy security but also contributes to the global dialogue on safe and responsible nuclear energy utilization. Through its strategic initiatives and forward-thinking approach, NPCIL continues to play a pivotal role in shaping India's energy future, driving progress towards a more sustainable and resilient energy ecosystem.</p>
+         </div>
+     </div>
+ 
+      <script>
+         $('.btn').click(function(){
+           $(this).toggleClass("click");
+           $('.sidebar').toggleClass("show");
+         });
+           $('.feat-btn').click(function(){
+             $('nav ul .feat-show').toggleClass("show");
+             $('nav ul .first').toggleClass("rotate");
+           });
+           $('.serv-btn').click(function(){
+             $('nav ul .serv-show').toggleClass("show1");
+             $('nav ul .second').toggleClass("rotate");
+           });
+           $('nav ul li').click(function(){
+             $(this).addClass("active").siblings().removeClass("active");
+           });
+      </script>
+      </div>
+
+   </div>
+   </body>
+</html>

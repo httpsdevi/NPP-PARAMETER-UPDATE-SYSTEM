@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://kit.fontawesome.com/740cc49fd4.js" crossorigin="anonymous"></script>
+
+  <style>
+    body{
+    margin:0;
+    padding:0;
+}
+
+.form-box{
+    width: 90%;
+    max-width: 450px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: #fff;
+    padding: 50px 60px 70px;
+    text-align: center;
+}
+.form-box h1{
+    font-size: 30px;
+    margin-bottom: 60px;
+    color: #3c00a0;
+    position: relative;
+}
+.form-box h1::after{
+    content: '';
+    width: 30px;
+    height: 4px;
+    border-radius: 3px;
+    background: #3c00a0;
+    position: absolute;
+    bottom: -12px;
+    left: 45%;
+    transform: translateX(45%);
+}
+
+.container{
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0,0,50,0.8),rgba(0,0,50,0.8)),url(bg_img.jpg);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+
+}
+
+.input-field{
+    max-height: 65px;
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.input-field i{
+    margin-left: 15px;
+    color: #999;
+}
+
+.btn-field{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.btn-field button{
+    flex-basis: 48%;
+    background: #3c00a0;
+    color: #fff;
+    height: 40px;
+    border-radius: 20px;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition:ease-in-out;
+}
+
+#signInBtn > a:first-child {
+    color: whitesmoke
+}
+#signUpBtn > a:first-child{
+    color:whitesmoke;
+}
+.input-group{
+    height: 134px;
+}
+
+.btn-field button.disable{
+    background: #eaeaea;
+    color: #555;
+}
+  </style>
+</head>
+<body> 
+  <div class="container">
+    <div class="form-box">
+      <h1 id="title">NPCIL Parameter Update System</h1>
+      <form id="myForm">
+        <div class="input-group">
+          <div class="input-field" id="namefield">
+            <i class="fa-regular fa-user"></i>
+            <input type="text" placeholder="Name" required />
+          </div>
+
+          <div class="input-field">
+            <i class="fa-regular fa-envelope"></i>
+            <input type="email" placeholder="email" required />
+          </div>
+
+          <div class="input-field">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" placeholder="password" required />
+          </div>
+          <p>Forgot password <a href="help.html">Click Here!</a></p>
+        </div>
+        <div class="btn-field">
+          <button type="button" id="signUpBtn"><a href="account.html">SignUp</a></button>
+          <button type="button" id="signInBtn"><a href="bgpage.html">SignIn</a></button><!--link ing one page to another-->
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById('signInBtn').addEventListener('click',function(){
+        if(document.getElementById('myForm').checkValidity()){
+            window.location.href = 'bgpage.html';
+        }
+        else{
+            alert('Please fill out all required fields')
+        }
+    })
+    document.getElementById('signUpBtn').addEventListener('click',function(){
+        if(document.getElementById('myForm').checkValidity()){
+            window.location.href = 'account.html';
+        }
+        else{
+            alert('Please fill out all required fields')
+        }
+    })
+  </script>
+  <form action="bgpage.html" method="post">
+    <label for="name">name:</label>
+    <input type="text" id="name" name="name" minlength="5" maxlength="15" required />
+  
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+  
+    <label for="password">password:</label>
+    <input type="number" id="age" name="password#signInBtn > a:first-child {
+        color: #ff0000; /* Change #ff0000 to your desired color */
+    }" min="18" max="100" required />
+  
+    <input type="submit" value="Submit" />
+  </form>
+</script>
+</body>
+</html>

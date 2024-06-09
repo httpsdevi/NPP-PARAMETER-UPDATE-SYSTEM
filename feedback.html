@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <link rel="stylesheet" href="feedback.css">
+</head>
+<body>
+
+<header>
+    <h1>Feedback Form</h1>
+</header>
+
+<div id="responseMessage"></div> <!-- Display API response message -->
+
+<form id="feedbackForm">
+    <input name="name" type="text" id="name" class="feedback-input" placeholder="Name" required />
+    <input name="email" type="email" id="email" class="feedback-input" placeholder="Email" required />
+    <input type="radio" name="rate" id="bad" value="bad" required /><label for="bad">Bad</label><br><br>
+    <input type="radio" name="rate" id="average" value="average" required /><label for="average">Average</label><br><br>
+    <input type="radio" name="rate" id="good" value="good" required /><label for="good">Good</label><br><br>
+
+    <textarea name="message" id="message" class="feedback-input" placeholder="Comment" required></textarea>
+    <input type="submit" value="SUBMIT" />
+</form>
+
+<footer>
+    <p>&copy; 2024 NPCIL | Feedback Form.</p>
+</footer>
+
+<script src="feedback.js"></script>
+</body>
+</html>

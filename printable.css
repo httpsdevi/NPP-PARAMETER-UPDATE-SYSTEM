@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #006699;
+    text-align: center;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+section h2 {
+    color: #006699;
+}
+
+section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+section li::before {
+    content: "• ";
+    color: #006699;
+    display: inline-block; 
+    width: 1em;
+    margin-left: -1em;
+}
+
+button {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: #006699;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@media print {
+    body {
+        background-color: white; /* No background color for printing */
+    }
+
+    button {
+        display: none; /* Hide the print button */
+    }
+}

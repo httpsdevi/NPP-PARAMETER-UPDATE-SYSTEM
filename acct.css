@@ -1,0 +1,65 @@
+#myForm{
+  text-align: center;
+}
+.cardbody{
+  width:500px;
+  background-color: white;
+  border-radius: 10px;
+  text-align:center;
+  border:3px solid purple;
+  margin:auto;
+  padding:10px;
+
+}
+h2{text-align: center;}
+.container {
+  position: relative;
+  width: 100%;
+  height:100%;
+
+  overflow: hidden;
+}
+.translucent-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.317); /* Adjust the alpha value for desired transparency */
+}  
+.content {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: black; /* Text color for contrast */
+}
+.content h2{
+  color:white;
+}
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}  
+button {
+  padding: 10px 20px;
+  background-color: #0000ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.cardlabel input[type="radio"] {
+  margin-bottom: 3px;
+}
+#accountCreatedMsg{
+color:black;
+text-align: center;
+}
+#accountCreatedMsg {
+display: none;
+color: green;
+font-weight: bold;
+}

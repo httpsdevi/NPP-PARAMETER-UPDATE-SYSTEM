@@ -1,0 +1,16 @@
+#tableContainer table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #tableContainer th, #tableContainer td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 3px solid #060606;
+  }
+  
+  #tableContainer tr:nth-child(even) {
+    background-color: #faf9f9;
+  }
+
+  

@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container{
+  width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0,0,50,0.8),rgba(0,0,50,0.8)),url(bg_img.jpg);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+
+}
+.btn{
+  position: absolute;
+  top: 15px;
+  left: 45px;
+  height: 45px;
+  width: 45px;
+  text-align: center;
+  background: #1b1b1b;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: left 0.4s ease;
+}
+.btn.click{
+  left: 260px;
+}
+.btn span{
+  color: white;
+  font-size: 28px;
+  line-height: 45px;
+}
+.btn.click span:before{
+  content: '\f00d';
+}
+.sidebar{
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  left: -250px;
+  background: #1b1b1b;
+  transition: left 0.4s ease;
+}
+.sidebar.show{
+  left: 0px;
+}
+.sidebar .text{
+  color: white;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 65px;
+  text-align: center;
+  background: #1e1e1e;
+  letter-spacing: 1px;
+}
+nav ul{
+  background: #1b1b1b;
+  height: 100%;
+  width: 100%;
+  list-style: none;
+}
+nav ul li{
+  line-height: 60px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+nav ul li:last-child{
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+nav ul li a{
+  position: relative;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding-left: 40px;
+  font-weight: 500;
+  display: block;
+  width: 100%;
+  border-left: 3px solid transparent;
+}
+nav ul li.active a{
+  color: cyan;
+  background: rgb(16, 16, 16);
+  border-left-color: cyan;
+}
+nav ul li a:hover{
+  background: #1e1e1e;
+}
+nav ul ul{
+  position: static;
+  display: none;
+}
+nav ul .feat-show.show{
+  display: block;
+}
+nav ul .serv-show.show1{
+  display: block;
+}
+nav ul ul li{
+  line-height: 42px;
+  border-top: none;
+}
+nav ul ul li a{
+  font-size: 17px;
+  color: #e6e6e6;
+  padding-left: 80px;
+}
+nav ul li.active ul li a{
+  color: #e6e6e6;
+  background: #1b1b1b;
+  border-left-color: transparent;
+}
+nav ul ul li a:hover{
+  color: cyan!important;
+  background: #1e1e1e!important;
+}
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+nav ul li a span{
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  font-size: 22px;
+  transition: transform 0.4s;
+}
+nav ul li a span.rotate{
+  transform: translateY(-50%) rotate(-180deg);
+}
+.content{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  color: #202020;
+  z-index: -1;
+  text-align: center;
+}
+.content .header{
+  font-size: 45px;
+  font-weight: 600;
+}
+.content p{
+  font-size: 30px;
+  font-weight: 500;
+}
+.cards-container{
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translate(-170%,130%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: right;
+  align-items: right;
+  z-index: 1;
+}
+.cardbody img {
+  width: 100%; /* Adjust the width of the image to fill the container */
+  height: auto; /* Maintain the aspect ratio of the image */
+  display: block; /* Ensure the image behaves as a block element */
+}
+.cardbody p {
+  font-size: 16px;
+  color: #e6e2e2;
+  margin-top: 10px;
+}
+
+.cardbody{
+  margin: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  border: 1px solid #ccc;
+  text-align: center;
+  line-height: 200px;
+}
+
+.cards-container {
+  position:absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items:left right;
+  z-index: 1;
+}
+
+.cardbody {
+  margin: 10px;
+  width: 850px;
+  height: 550px;
+  background-color: white;
+  border: 1px solid #ccc;
+  text-align: center;
+  line-height: 100px;
+}
+img{
+  width:200%;
+  height: 200%;
+}
+.cardbody img{
+width:150px;
+height:150px;
+transform: translate(5%,5%);
+}
+.cardbody h4 {
+  margin-top: 0; /* Remove default margin */
+  font-size: 18px; /* Adjust font size */
+  color: #333; /* Text color */
+  transform: translate(-38%,-10%);
+}
+
+.cardbody .first-paragraph {
+  margin-bottom: 10px; /* Add some spacing between paragraphs */
+  font-size: 14px; /* Adjust font size */
+  color: #555; /* Text color */
+  transform: translate(25%,-120%);
+  width: 80%;
+}
+.cardbody .second-paragraph {
+  margin-bottom: 10px; /* Add some spacing between paragraphs */
+  font-size: 14px; /* Adjust font size */
+  color: #555; /* Text color */
+  transform: translate(5%,-90%);
+  width: 95%;
+}
+
+.first-paragraph{
+line-height:35px;
+}
+.second-paragraph{
+line-height:35px;
+}
