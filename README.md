@@ -14,92 +14,24 @@ The Nuclear Power Plant Update System is a critical safety and monitoring platfo
 ## 📁 Project Structure
 
 ```
-nuclear-power-plant-system/
-├── README.md
-├── LICENSE
-├── .gitignore
-├── requirements.txt
-├── docker-compose.yml
-│
-├── src/
-│   ├── core/
-│   │   ├── __init__.py
-│   │   ├── AppendingInput.py          # Input data processing
-│   │   ├── BackgroundSignal.py        # Background signal monitoring
-│   │   ├── CheckSafetyNet.py          # Safety system verification
-│   │   └── WatchdogTimer.py           # System watchdog implementation
-│   │
-│   ├── monitoring/
-│   │   ├── __init__.py
-│   │   ├── ReactorMonitor.py          # Reactor status monitoring
-│   │   ├── TemperatureGauge.py        # Temperature monitoring
-│   │   ├── PressureGauge.py           # Pressure monitoring
-│   │   └── RadiationDetector.py       # Radiation level detection
-│   │
-│   ├── safety/
-│   │   ├── __init__.py
-│   │   ├── EmergencyShutdown.py       # Emergency protocols
-│   │   ├── SafetyProtocols.py         # Safety procedure enforcement
-│   │   ├── AlarmSystem.py             # Alert and alarm management
-│   │   └── ContainmentCheck.py        # Containment integrity verification
-│   │
-│   ├── communication/
-│   │   ├── __init__.py
-│   │   ├── NetworkProtocol.py         # Network communication handlers
-│   │   ├── SecureTransfer.py          # Encrypted data transfer
-│   │   ├── StatusReporter.py          # Status reporting system
-│   │   └── RemoteAccess.py            # Secure remote access
-│   │
-│   ├── data/
-│   │   ├── __init__.py
-│   │   ├── DataLogger.py              # Data logging and storage
-│   │   ├── BackupManager.py           # Automated backup system
-│   │   ├── DatabaseHandler.py         # Database operations
-│   │   └── FileManager.py             # File system management
-│   │
-│   └── utils/
-│       ├── __init__.py
-│       ├── ConfigManager.py           # Configuration management
-│       ├── Logger.py                  # System logging utilities
-│       ├── Validators.py              # Data validation functions
-│       └── Helpers.py                 # General utility functions
-│
-├── config/
-│   ├── app.conf                       # Application configuration
-│   ├── security.conf                  # Security settings
-│   ├── monitoring.conf                # Monitoring parameters
-│   └── database.conf                  # Database configuration
-│
-├── data/
-│   ├── logs/                          # System logs
-│   ├── backups/                       # Automated backups
-│   ├── reports/                       # Generated reports
-│   └── temp/                          # Temporary files
-│
-├── tests/
-│   ├── __init__.py
-│   ├── test_core.py                   # Core functionality tests
-│   ├── test_monitoring.py             # Monitoring system tests
-│   ├── test_safety.py                 # Safety system tests
-│   └── test_integration.py            # Integration tests
-│
-├── docs/
-│   ├── installation.md               # Installation guide
-│   ├── configuration.md              # Configuration documentation
-│   ├── safety-protocols.md           # Safety procedure documentation
-│   ├── api-reference.md              # API documentation
-│   └── troubleshooting.md            # Troubleshooting guide
-│
-├── scripts/
-│   ├── setup.sh                      # Setup script
-│   ├── backup.sh                     # Backup utility
-│   ├── monitor.sh                    # Monitoring script
-│   └── emergency.sh                  # Emergency procedures
-│
-└── docker/
-    ├── Dockerfile
-    ├── docker-entrypoint.sh
-    └── health-check.sh
+/src
+  ├── app/
+  ├── components/
+  ├── assets/
+      └── images/
+  ├── pages/
+  └── utils/
+  
+/public
+  └── index.html
+
+/tests
+  └── app.test.js
+
+README.md
+package.json
+.gitignore
+
 ```
 
 ## 🚀 Quick Start
