@@ -3,863 +3,1305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPP Parameter Update System - Report</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>NPPUPS - Nuclear Power Plant Update Parameter System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #0c1445 0%, #1a237e 50%, #283593 100%);
+            color: #fff;
+            overflow-x: auto;
         }
-
-        .report-container {
-            max-width: 1200px;
+        
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 4px solid #00e5ff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #00e5ff, #18ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            color: #b3e5fc;
+            margin-bottom: 5px;
+        }
+        
+        .header .mission {
+            font-size: 1em;
+            color: #81d4fa;
+            font-style: italic;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
         }
-
-        .report-header {
-            background: linear-gradient(135deg, #3c00a0 0%, #6366f1 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(60,0,160,0.3);
-        }
-
-        .report-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .report-subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-
-        .report-meta {
+        
+        .global-stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .global-stat {
+            text-align: center;
+        }
+        
+        .global-stat .number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00e5ff;
+        }
+        
+        .global-stat .label {
+            font-size: 0.9em;
+            color: #b3e5fc;
+        }
+        
+        .dashboard-nav {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             flex-wrap: wrap;
-            gap: 20px;
+            backdrop-filter: blur(10px);
         }
-
-        .report-date {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .print-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
+        
+        .nav-btn {
+            background: linear-gradient(145deg, #00e5ff, #18ffff);
+            color: #000;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
             transition: all 0.3s ease;
-            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
         }
-
-        .print-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.5);
         }
-
-        /* Executive Summary */
-        .executive-summary {
-            background: white;
-            border-radius: 12px;
+        
+        .nav-btn.active {
+            background: linear-gradient(145deg, #ff5722, #ff7043);
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.5);
+        }
+        
+        .dashboard-container {
+            padding: 35px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-section {
+            display: none;
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        .dashboard-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #00e5ff;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #00e5ff;
+        }
+        
+        .section-description {
+            font-size: 1.1em;
+            color: #b3e5fc;
+            line-height: 1.5;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
             padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-
-        .summary-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #3c00a0;
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00e5ff, #18ffff);
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .kpi-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .kpi-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+            line-height: 1.3;
+        }
+        
+        .kpi-trend {
+            font-size: 0.9em;
+            margin-top: 8px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .trend-up { color: #4caf50; }
+        .trend-down { color: #f44336; }
+        .trend-stable { color: #ffeb3b; }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00e5ff, #18ffff);
+            border-radius: 18px 18px 0 0;
+        }
+        
+        .chart-title {
+            font-size: 1.4em;
+            font-weight: bold;
             margin-bottom: 20px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
+            text-align: center;
+            color: #00e5ff;
         }
-
-        .summary-grid {
+        
+        .chart-placeholder {
+            height: 300px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .world-map-container {
+            background: linear-gradient(45deg, rgba(0, 229, 255, 0.1), rgba(24, 255, 255, 0.1));
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reactor-comparison-table {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            margin-bottom: 25px;
+        }
+        
+        .reactor-comparison-table::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00e5ff, #18ffff);
+            border-radius: 18px 18px 0 0;
+        }
+        
+        .reactor-comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .reactor-comparison-table th,
+        .reactor-comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .reactor-comparison-table th {
+            background: rgba(0, 229, 255, 0.2);
+            font-weight: bold;
+            color: #00e5ff;
+        }
+        
+        .reactor-comparison-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .country-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        .reactor-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .pwr { background: rgba(76, 175, 80, 0.3); color: #4caf50; }
+        .bwr { background: rgba(33, 150, 243, 0.3); color: #2196f3; }
+        .candu { background: rgba(255, 193, 7, 0.3); color: #ffc107; }
+        .vver { background: rgba(156, 39, 176, 0.3); color: #9c27b0; }
+        
+        .predictive-alert {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 235, 59, 0.1));
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .alert-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+            color: #ffc107;
+        }
+        
+        .ml-insight {
+            background: linear-gradient(135deg, rgba(103, 58, 183, 0.2), rgba(156, 39, 176, 0.1));
+            border-left: 4px solid #673ab7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(103, 58, 183, 0.3);
+        }
+        
+        .standardization-metrics {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 25px;
         }
-
-        .summary-metric {
-            text-align: center;
+        
+        .standard-metric {
+            background: rgba(255, 255, 255, 0.05);
             padding: 20px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border-left: 4px solid #3c00a0;
-        }
-
-        .metric-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #3c00a0;
-            margin-bottom: 5px;
-        }
-
-        .metric-label {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        /* Charts Section */
-        .charts-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .chart-card {
-            background: white;
             border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .chart-header {
-            font-size: 18px;
-            font-weight: 600;
-            color: #3c00a0;
-            margin-bottom: 20px;
+        
+        .standard-metric .percentage {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #00e5ff;
+            margin-bottom: 8px;
+        }
+        
+        .standard-metric .metric-name {
+            font-size: 1em;
+            color: #b3e5fc;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00e5ff, #18ffff);
+            transition: width 2s ease;
+        }
+        
+        .timestamp {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .ai-prediction-box {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(24, 255, 255, 0.05));
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .ai-title {
+            font-size: 1.3em;
+            color: #00e5ff;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
         }
-
-        .chart-canvas {
-            height: 300px;
+        
+        .ai-icon {
+            margin-right: 10px;
+            font-size: 1.4em;
         }
-
-        /* Data Tables */
-        .data-section {
-            background: white;
-            border-radius: 12px;
+        
+        @media (max-width: 768px) {
+            .global-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .dashboard-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 250px;
+            }
+            
+            .kpi-grid,
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timestamp {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+        }
+        
+        .collaboration-network {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .country-node {
+            background: rgba(0, 229, 255, 0.2);
+            border: 2px solid #00e5ff;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .country-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+        
+        .collaboration-table {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
             padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            margin-bottom: 25px;
         }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #3c00a0;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
-        }
-
-        table {
+        
+        .collaboration-table table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
-
-        th, td {
-            padding: 12px 15px;
+        
+        .collaboration-table th, .collaboration-table td {
+            padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        th {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #374151;
-            font-size: 14px;
+        
+        .collaboration-table th {
+            background: rgba(0, 229, 255, 0.2);
+            font-weight: bold;
+            color: #00e5ff;
         }
-
-        tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .status-normal { background: #dcfce7; color: #166534; }
-        .status-warning { background: #fef3c7; color: #92400e; }
-        .status-critical { background: #fee2e2; color: #991b1b; }
-
-        /* Key Findings */
-        .findings-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
-        }
-
-        .finding-item {
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3c00a0;
-            background: #f8fafc;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .finding-title {
-            font-weight: 600;
-            color: #3c00a0;
-            margin-bottom: 5px;
-        }
-
-        .finding-text {
-            color: #4b5563;
-            font-size: 14px;
-        }
-
-        /* Recommendations */
-        .recommendations {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border: 1px solid #bbf7d0;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-
-        .recommendation-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .recommendation-icon {
-            color: #059669;
-            font-size: 18px;
-            margin-top: 2px;
-        }
-
-        .recommendation-text {
-            flex: 1;
-            color: #374151;
-        }
-
-        /* Footer */
-        .report-footer {
-            text-align: center;
-            padding: 20px;
-            color: #6b7280;
-            font-size: 14px;
-            border-top: 1px solid #e5e7eb;
-            margin-top: 40px;
-        }
-
-        @media print {
-            .print-btn {
-                display: none;
-            }
-            
-            body {
-                background: white;
-            }
-            
-            .chart-canvas {
-                height: 250px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .report-container {
-                padding: 10px;
-            }
-            
-            .charts-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .summary-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .report-meta {
-                flex-direction: column;
-                text-align: center;
-            }
+        
+        .collaboration-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
 <body>
-    <div class="report-container">
-        <!-- Report Header -->
-        <div class="report-header">
-            <div class="report-title">NPP Parameter Update System</div>
-            <div class="report-subtitle">Operational Performance & Analytics Report</div>
-            <div class="report-meta">
-                <div class="report-date">
-                    Report Generated: <span id="reportDate"></span><br>
-                    Period: <span id="reportPeriod">Last 24 Hours</span>
-                </div>
-                <button class="print-btn" onclick="window.print()">
-                    📄 Print Report
-                </button>
-            </div>
+    <div class="timestamp" id="timestamp"></div>
+    
+    <div class="header">
+        <h1>NPPUPS</h1>
+        <div class="subtitle">Nuclear Power Plant Update Parameter System</div>
+        <div class="mission">Enhancing safety, efficiency, and reliability through international standardization and predictive analytics</div>
+    </div>
+    
+    <div class="global-stats">
+        <div class="global-stat">
+            <div class="number">147</div>
+            <div class="label">Countries Participating</div>
         </div>
-
-        <!-- Executive Summary -->
-        <div class="executive-summary">
-            <div class="summary-title">📊 Executive Summary</div>
-            <div class="summary-grid">
-                <div class="summary-metric">
-                    <div class="metric-value" id="totalParams">1,247</div>
-                    <div class="metric-label">Total Parameters</div>
-                </div>
-                <div class="summary-metric">
-                    <div class="metric-value" id="systemUptime">99.94%</div>
-                    <div class="metric-label">System Uptime</div>
-                </div>
-                <div class="summary-metric">
-                    <div class="metric-value" id="dataQuality">97.2%</div>
-                    <div class="metric-label">Data Quality</div>
-                </div>
-                <div class="summary-metric">
-                    <div class="metric-value" id="criticalAlerts">3</div>
-                    <div class="metric-label">Critical Alerts</div>
-                </div>
-                <div class="summary-metric">
-                    <div class="metric-value" id="updateSuccess">98.7%</div>
-                    <div class="metric-label">Update Success</div>
-                </div>
-            </div>
-            
-            <p style="margin-top: 20px; color: #4b5563;">
-                The NPP Parameter Update System demonstrates strong operational performance with 99.94% uptime and 97.2% data quality. 
-                Current monitoring covers 1,247 parameters across all plant units with a 98.7% successful update rate. 
-                Three critical alerts require immediate attention, primarily related to cooling system parameters in Unit 2.
-            </p>
+        <div class="global-stat">
+            <div class="number">2,847</div>
+            <div class="label">Standardized Parameters</div>
         </div>
-
-        <!-- Key Performance Charts -->
-        <div class="charts-section">
-            <div class="chart-card">
-                <div class="chart-header">
-                    📈 Parameter Status Overview
-                </div>
-                <canvas id="statusChart" class="chart-canvas"></canvas>
-            </div>
-            
-            <div class="chart-card">
-                <div class="chart-header">
-                    📊 Update Frequency Trends
-                </div>
-                <canvas id="updateChart" class="chart-canvas"></canvas>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    🎯 System Performance Metrics
-                </div>
-                <canvas id="performanceChart" class="chart-canvas"></canvas>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    📉 Parameter Deviation Analysis
-                </div>
-                <canvas id="deviationChart" class="chart-canvas"></canvas>
-            </div>
+        <div class="global-stat">
+            <div class="number">89.7%</div>
+            <div class="label">ML Prediction Accuracy</div>
         </div>
-
-        <!-- Critical Parameters Table -->
-        <div class="data-section">
-            <div class="section-title">🔴 Critical Parameters Requiring Attention</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Parameter ID</th>
-                        <th>Description</th>
-                        <th>Current Value</th>
-                        <th>Threshold</th>
-                        <th>Deviation</th>
-                        <th>Unit</th>
-                        <th>Status</th>
-                        <th>Last Updated</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>RC-001</td>
-                        <td>Reactor Core Temperature</td>
-                        <td>287.5</td>
-                        <td>285.0</td>
-                        <td>+2.5</td>
-                        <td>°C</td>
-                        <td><span class="status-badge status-warning">Warning</span></td>
-                        <td>2025-08-31 14:23:45</td>
-                    </tr>
-                    <tr>
-                        <td>CS-045</td>
-                        <td>Cooling System Pressure</td>
-                        <td>152.3</td>
-                        <td>150.0</td>
-                        <td>+2.3</td>
-                        <td>PSI</td>
-                        <td><span class="status-badge status-critical">Critical</span></td>
-                        <td>2025-08-31 14:22:15</td>
-                    </tr>
-                    <tr>
-                        <td>TG-023</td>
-                        <td>Turbine Generator RPM</td>
-                        <td>2,995</td>
-                        <td>3,000</td>
-                        <td>-5</td>
-                        <td>RPM</td>
-                        <td><span class="status-badge status-warning">Warning</span></td>
-                        <td>2025-08-31 14:25:12</td>
-                    </tr>
-                    <tr>
-                        <td>SF-012</td>
-                        <td>Safety System Response</td>
-                        <td>98.2</td>
-                        <td>99.0</td>
-                        <td>-0.8</td>
-                        <td>%</td>
-                        <td><span class="status-badge status-critical">Critical</span></td>
-                        <td>2025-08-31 14:20:33</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- System Performance Summary -->
-        <div class="data-section">
-            <div class="section-title">⚡ System Performance Summary</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Current Value</th>
-                        <th>Target</th>
-                        <th>Status</th>
-                        <th>Trend (7 days)</th>
-                        <th>Last Measurement</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>System Uptime</td>
-                        <td>99.94%</td>
-                        <td>99.90%</td>
-                        <td><span class="status-badge status-normal">Normal</span></td>
-                        <td>↗ +0.04%</td>
-                        <td>2025-08-31 14:30:00</td>
-                    </tr>
-                    <tr>
-                        <td>Data Quality Score</td>
-                        <td>97.2%</td>
-                        <td>98.0%</td>
-                        <td><span class="status-badge status-warning">Warning</span></td>
-                        <td>↗ +1.8%</td>
-                        <td>2025-08-31 14:25:15</td>
-                    </tr>
-                    <tr>
-                        <td>Update Success Rate</td>
-                        <td>98.7%</td>
-                        <td>99.0%</td>
-                        <td><span class="status-badge status-warning">Warning</span></td>
-                        <td>↗ +2.3%</td>
-                        <td>2025-08-31 14:30:00</td>
-                    </tr>
-                    <tr>
-                        <td>Average Response Time</td>
-                        <td>12.3ms</td>
-                        <td>15.0ms</td>
-                        <td><span class="status-badge status-normal">Normal</span></td>
-                        <td>↘ -1.2ms</td>
-                        <td>2025-08-31 14:29:45</td>
-                    </tr>
-                    <tr>
-                        <td>Error Rate</td>
-                        <td>0.06%</td>
-                        <td>0.10%</td>
-                        <td><span class="status-badge status-normal">Normal</span></td>
-                        <td>↘ -0.02%</td>
-                        <td>2025-08-31 14:28:30</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Key Findings -->
-        <div class="findings-section">
-            <div class="section-title">🔍 Key Findings & Analysis</div>
-            
-            <div class="finding-item">
-                <div class="finding-title">1. System Performance Excellence</div>
-                <div class="finding-text">
-                    The NPP Parameter Update System maintains exceptional uptime at 99.94%, exceeding the target of 99.90%. 
-                    Response times average 12.3ms, well below the 15ms threshold, indicating optimal system performance.
-                </div>
-            </div>
-
-            <div class="finding-item">
-                <div class="finding-title">2. Data Quality Improvement Trend</div>
-                <div class="finding-text">
-                    Data quality has improved by 1.8% over the past week, reaching 97.2%. The primary quality issues stem from 
-                    sensor calibration delays in the cooling system, which are scheduled for maintenance.
-                </div>
-            </div>
-
-            <div class="finding-item">
-                <div class="finding-title">3. Parameter Update Efficiency</div>
-                <div class="finding-text">
-                    98.7% of parameter updates completed successfully, with most failures attributed to network timeouts during 
-                    peak update periods (2-4 PM daily). Update frequency peaks correlate with shift changes.
-                </div>
-            </div>
-
-            <div class="finding-item">
-                <div class="finding-title">4. Critical Alert Reduction</div>
-                <div class="finding-text">
-                    Critical alerts decreased by 40% from last week, down to 3 active alerts. Current alerts focus on 
-                    cooling system pressure and safety system response times, both within manageable ranges.
-                </div>
-            </div>
-        </div>
-
-        <!-- Recommendations -->
-        <div class="recommendations">
-            <div class="section-title">💡 Recommendations</div>
-            
-            <div class="recommendation-item">
-                <div class="recommendation-icon">✅</div>
-                <div class="recommendation-text">
-                    <strong>Cooling System Maintenance:</strong> Schedule immediate calibration of cooling system sensors to address current pressure readings and improve data quality scores.
-                </div>
-            </div>
-
-            <div class="recommendation-item">
-                <div class="recommendation-icon">🔧</div>
-                <div class="recommendation-text">
-                    <strong>Network Optimization:</strong> Implement load balancing during peak update periods (2-4 PM) to reduce timeout-related update failures.
-                </div>
-            </div>
-
-            <div class="recommendation-item">
-                <div class="recommendation-icon">📈</div>
-                <div class="recommendation-text">
-                    <strong>Predictive Maintenance:</strong> Deploy machine learning algorithms to predict parameter deviations 2-4 hours in advance, enabling proactive interventions.
-                </div>
-            </div>
-
-            <div class="recommendation-item">
-                <div class="recommendation-icon">🛡️</div>
-                <div class="recommendation-text">
-                    <strong>Safety System Enhancement:</strong> Review safety system response protocols to bring performance back above 99% threshold within the next maintenance window.
-                </div>
-            </div>
-        </div>
-
-        <!-- Parameter Distribution by Unit -->
-        <div class="data-section">
-            <div class="section-title">🏭 Parameter Distribution by Plant Unit</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Plant Unit</th>
-                        <th>Total Parameters</th>
-                        <th>Normal</th>
-                        <th>Warning</th>
-                        <th>Critical</th>
-                        <th>Offline</th>
-                        <th>Update Success Rate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Unit 1</strong></td>
-                        <td>416</td>
-                        <td>398</td>
-                        <td>15</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>99.1%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Unit 2</strong></td>
-                        <td>415</td>
-                        <td>395</td>
-                        <td>18</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>98.2%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Unit 3</strong></td>
-                        <td>416</td>
-                        <td>396</td>
-                        <td>12</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>98.8%</td>
-                    </tr>
-                    <tr style="background: #f3f4f6; font-weight: 600;">
-                        <td><strong>Total</strong></td>
-                        <td>1,247</td>
-                        <td>1,189</td>
-                        <td>45</td>
-                        <td>8</td>
-                        <td>5</td>
-                        <td>98.7%</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Report Footer -->
-        <div class="report-footer">
-            <p><strong>NPCIL Parameter Update System</strong> | Generated by NPP Analytics Engine</p>
-            <p>For technical support, contact: support@npcil.gov.in | Emergency: +91-XXXX-XXXXXX</p>
-            <p>This report contains confidential operational data. Distribution restricted to authorized personnel only.</p>
+        <div class="global-stat">
+            <div class="number">24/7</div>
+            <div class="label">Global Monitoring</div>
         </div>
     </div>
+    
+    <div class="dashboard-nav">
+        <button class="nav-btn active" onclick="showSection('global')">🌍 Global Overview</button>
+        <button class="nav-btn" onclick="showSection('standardization')">📊 Parameter Standardization</button>
+        <button class="nav-btn" onclick="showSection('predictive')">🤖 Predictive Analytics</button>
+        <button class="nav-btn" onclick="showSection('collaboration')">🤝 International Collaboration</button>
+        <button class="nav-btn" onclick="showSection('benchmarking')">📈 Cross-Reactor Benchmarking</button>
+    </div>
+    
+    <div class="dashboard-container">
+        <!-- Global Overview -->
+        <div id="global" class="dashboard-section active">
+            <div class="section-header">
+                <div class="section-title">🌍 Global Nuclear Parameter Monitoring</div>
+                <div class="section-description">Real-time overview of standardized parameters across international nuclear facilities, promoting unified safety standards and operational excellence.</div>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #4caf50;">98.9%</div>
+                    <div class="kpi-label">Global Safety Compliance</div>
+                    <div class="kpi-trend trend-up">↗ +0.3% vs last month</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #00e5ff;">456</div>
+                    <div class="kpi-label">Active NPPs Worldwide</div>
+                    <div class="kpi-trend trend-up">↗ +2 new plants online</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #ffc107;">127</div>
+                    <div class="kpi-label">Predictive Alerts (24h)</div>
+                    <div class="kpi-trend trend-down">↘ -15% preventive actions</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #9c27b0;">2.3M</div>
+                    <div class="kpi-label">Data Points/Hour</div>
+                    <div class="kpi-trend trend-stable">→ Steady collection rate</div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">🗺️ Global NPP Distribution & Status</div>
+                    <div class="chart-placeholder world-map-container">
+                        <div class="collaboration-network">
+                            <div class="country-node" style="background: rgba(76, 175, 80, 0.3);">
+                                <div>🇺🇸</div>
+                                <div>93 NPPs</div>
+                            </div>
+                            <div class="country-node" style="background: rgba(33, 150, 243, 0.3);">
+                                <div>🇫🇷</div>
+                                <div>56 NPPs</div>
+                            </div>
+                            <div class="country-node" style="background: rgba(255, 193, 7, 0.3);">
+                                <div>🇯🇵</div>
+                                <div>33 NPPs</div>
+                            </div>
+                            <div class="country-node" style="background: rgba(156, 39, 176, 0.3);">
+                                <div>🇷🇺</div>
+                                <div>38 NPPs</div>
+                            </div>
+                            <div class="country-node" style="background: rgba(244, 67, 54, 0.3);">
+                                <div>🇨🇳</div>
+                                <div>54 NPPs</div>
+                            </div>
+                            <div class="country-node" style="background: rgba(255, 152, 0, 0.3);">
+                                <div>🇮🇳</div>
+                                <div>23 NPPs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">📊 Real-Time Parameter Trends</div>
+                    <div class="chart-placeholder">
+                        <canvas id="globalTrendsChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-prediction-box">
+                <div class="ai-title">
+                    <span class="ai-icon">🤖</span>
+                    AI-Powered Global Insights
+                </div>
+                <div>• Machine Learning models predict 94.2% accuracy in identifying parameter anomalies across reactor types</div>
+                <div>• Cross-reactor pattern analysis suggests optimized coolant flow parameters could improve efficiency by 2.1%</div>
+                <div>• International data correlation identifies seasonal trends affecting 78% of global facilities</div>
+            </div>
+        </div>
+        
+        <!-- Parameter Standardization -->
+        <div id="standardization" class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">📊 International Parameter Standardization</div>
+                <div class="section-description">Harmonizing operational parameters across different reactor types and countries to enable seamless collaboration and knowledge sharing.</div>
+            </div>
+            
+            <div class="standardization-metrics">
+                <div class="standard-metric">
+                    <div class="percentage">94.7%</div>
+                    <div class="metric-name">Safety Parameters</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 94.7%;"></div></div>
+                </div>
+                <div class="standard-metric">
+                    <div class="percentage">87.3%</div>
+                    <div class="metric-name">Operational Metrics</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 87.3%;"></div></div>
+                </div>
+                <div class="standard-metric">
+                    <div class="percentage">91.8%</div>
+                    <div class="metric-name">Maintenance Protocols</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 91.8%;"></div></div>
+                </div>
+                <div class="standard-metric">
+                    <div class="percentage">78.2%</div>
+                    <div class="metric-name">Regulatory Compliance</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 78.2%;"></div></div>
+                </div>
+            </div>
+            
+            <div class="reactor-comparison-table">
+                <div class="chart-title">🏭 Reactor Type Standardization Status</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reactor Type</th>
+                            <th>Countries</th>
+                            <th>Units</th>
+                            <th>Standardized Parameters</th>
+                            <th>Compliance Rate</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="reactor-type pwr">PWR</span></td>
+                            <td>🇺🇸🇫🇷🇯🇵🇰🇷🇪🇸 +15</td>
+                            <td>298</td>
+                            <td>847/892 (94.9%)</td>
+                            <td><span style="color: #4caf50;">96.7%</span></td>
+                            <td>2025-08-31 14:23</td>
+                        </tr>
+                        <tr>
+                            <td><span class="reactor-type bwr">BWR</span></td>
+                            <td>🇺🇸🇯🇵🇸🇪🇫🇮🇹🇼 +8</td>
+                            <td>78</td>
+                            <td>734/823 (89.2%)</td>
+                            <td><span style="color: #4caf50;">93.1%</span></td>
+                            <td>2025-08-31 14:21</td>
+                        </tr>
+                        <tr>
+                            <td><span class="reactor-type candu">CANDU</span></td>
+                            <td>🇨🇦🇮🇳🇦🇷🇰🇷🇷🇴 +3</td>
+                            <td>49</td>
+                            <td>623/701 (88.9%)</td>
+                            <td><span style="color: #ffc107;">88.4%</span></td>
+                            <td>2025-08-31 14:19</td>
+                        </tr>
+                        <tr>
+                            <td><span class="reactor-type vver">VVER</span></td>
+                            <td>🇷🇺🇺🇦🇨🇿🇸🇰🇧🇬 +12</td>
+                            <td>73</td>
+                            <td>698/765 (91.2%)</td>
+                            <td><span style="color: #4caf50;">91.8%</span></td>
+                            <td>2025-08-31 14:25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📈 Standardization Progress Timeline</div>
+                    <div class="chart-placeholder">
+                        <canvas id="standardizationChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">🎯 Parameter Harmonization Status</div>
+                    <div class="chart-placeholder">
+                        <canvas id="harmonizationChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Predictive Analytics -->
+        <div id="predictive" class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">🤖 Predictive Analytics & Machine Learning</div>
+                <div class="section-description">Advanced AI algorithms analyze global parameter patterns to predict potential issues and optimize maintenance strategies across reactor types.</div>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #9c27b0;">89.7%</div>
+                    <div class="kpi-label">ML Prediction Accuracy</div>
+                    <div class="kpi-trend trend-up">↗ +2.1% model improvement</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #4caf50;">247</div>
+                    <div class="kpi-label">Issues Prevented (30d)</div>
+                    <div class="kpi-trend trend-up">↗ +18% vs last month</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #ff5722;">5.2hrs</div>
+                    <div class="kpi-label">Avg Prediction Lead Time</div>
+                    <div class="kpi-trend trend-up">↗ +0.8hrs improvement</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #00e5ff;">15.7M</div>
+                    <div class="kpi-label">Training Data Points</div>
+                    <div class="kpi-trend trend-up">↗ Growing dataset</div>
+                </div>
+            </div>
+            
+            <div class="predictive-alert">
+                <div class="alert-icon">⚠️</div>
+                <strong>Predictive Alert - Steam Generator Efficiency</strong><br>
+                ML models predict potential efficiency degradation in PWR reactors with steam generator age >25 years. Recommend enhanced monitoring for 47 units globally. Confidence: 87.3%
+            </div>
+            
+            <div class="ml-insight">
+                <div class="ai-title">
+                    <span class="ai-icon">🧠</span>
+                    Deep-Dive Analysis
+                </div>
+                <div>Advanced statistical models have identified a subtle, but growing, correlation between primary coolant pump vibration frequencies and a decline in heat transfer coefficient. This trend is most prominent in BWR reactors that have been in service for more than 15 years. The model predicts a 10% chance of a major pump failure within the next 6 months for 3 high-priority units. This predictive analysis allows for proactive maintenance scheduling, minimizing downtime and averting potential safety risks.</div>
+            </div>
 
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📉 Predicted Parameter Drift</div>
+                    <div class="chart-placeholder">
+                        <canvas id="predictiveDriftChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">📈 ML Model Confidence Score</div>
+                    <div class="chart-placeholder">
+                        <canvas id="confidenceChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- International Collaboration -->
+        <div id="collaboration" class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">🤝 International Collaboration Hub</div>
+                <div class="section-description">Facilitating joint research projects, shared data analysis, and cross-border knowledge transfer to enhance global nuclear safety and operational resilience.</div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #00e5ff;">58</div>
+                    <div class="kpi-label">Active Joint Projects</div>
+                    <div class="kpi-trend trend-up">↗ +3 new projects initiated</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #4caf50;">14.2 TB</div>
+                    <div class="kpi-label">Shared Data Volume</div>
+                    <div class="kpi-trend trend-up">↗ +1.1 TB this quarter</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #9c27b0;">3,120</div>
+                    <div class="kpi-label">Collaborators Registered</div>
+                    <div class="kpi-trend trend-up">↗ +5% growth YoY</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" style="color: #ffc107;">87%</div>
+                    <div class="kpi-label">Project Completion Rate</div>
+                    <div class="kpi-trend trend-stable">→ On track with Q3 goals</div>
+                </div>
+            </div>
+
+            <div class="collaboration-table">
+                <div class="chart-title">🌐 Recent Collaborative Projects</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project ID</th>
+                            <th>Lead Countries</th>
+                            <th>Focus Area</th>
+                            <th>Status</th>
+                            <th>Est. Completion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>J-001A</td>
+                            <td>🇺🇸, 🇫🇷</td>
+                            <td>Advanced Coolant Systems</td>
+                            <td style="color: #4caf50;">Active</td>
+                            <td>2026-03-15</td>
+                        </tr>
+                        <tr>
+                            <td>J-002B</td>
+                            <td>🇨🇦, 🇮🇳</td>
+                            <td>CANDU Maintenance Protocols</td>
+                            <td style="color: #4caf50;">Active</td>
+                            <td>2025-11-20</td>
+                        </tr>
+                        <tr>
+                            <td>J-003C</td>
+                            <td>🇷🇺, 🇨🇿</td>
+                            <td>VVER Regulatory Compliance</td>
+                            <td style="color: #ffc107;">In Review</td>
+                            <td>2025-09-30</td>
+                        </tr>
+                        <tr>
+                            <td>J-004D</td>
+                            <td>🇯🇵, 🇸🇪</td>
+                            <td>BWR Fuel Cycle Optimization</td>
+                            <td style="color: #4caf50;">Active</td>
+                            <td>2026-06-01</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📊 Collaborative Data Flow</div>
+                    <div class="chart-placeholder">
+                        <canvas id="collaborationChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">🎯 Project Success Rates by Region</div>
+                    <div class="chart-placeholder">
+                        <canvas id="projectSuccessChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cross-Reactor Benchmarking -->
+        <div id="benchmarking" class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">📈 Cross-Reactor Benchmarking</div>
+                <div class="section-description">Comparing key performance indicators (KPIs) and operational parameters across different reactor types to identify best practices and areas for improvement.</div>
+            </div>
+
+            <div class="reactor-comparison-table">
+                <div class="chart-title">⚙️ Operational Efficiency by Reactor Type</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>PWR (Avg)</th>
+                            <th>BWR (Avg)</th>
+                            <th>CANDU (Avg)</th>
+                            <th>VVER (Avg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Capacity Factor</td>
+                            <td>91.2%</td>
+                            <td>88.9%</td>
+                            <td>87.5%</td>
+                            <td>90.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Forced Outage Rate</td>
+                            <td>1.8%</td>
+                            <td>2.3%</td>
+                            <td>2.5%</td>
+                            <td>1.9%</td>
+                        </tr>
+                        <tr>
+                            <td>Refueling Downtime (days)</td>
+                            <td>21.5</td>
+                            <td>24.3</td>
+                            <td>0 (online)</td>
+                            <td>22.1</td>
+                        </tr>
+                        <tr>
+                            <td>LCOE ($/MWh)</td>
+                            <td>$42.10</td>
+                            <td>$45.50</td>
+                            <td>$51.20</td>
+                            <td>$43.80</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📊 Capacity Factor Comparison</div>
+                    <div class="chart-placeholder">
+                        <canvas id="capacityChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">📈 LCOE Comparison</div>
+                    <div class="chart-placeholder">
+                        <canvas id="lcoeChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        // Set report date
-        document.getElementById('reportDate').textContent = new Date().toLocaleString();
-        document.getElementById('reportPeriod').textContent = 'Last 24 Hours (Aug 30, 2025 14:30 - Aug 31, 2025 14:30)';
-
-        // Generate sample data
-        function generateTimeSeriesData(points, baseValue, variance) {
-            const data = [];
-            const labels = [];
-            const now = new Date();
-            
-            for (let i = points - 1; i >= 0; i--) {
-                const time = new Date(now.getTime() - i * 3600000);
-                labels.push(time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
-                data.push(baseValue + (Math.random() - 0.5) * variance);
-            }
-            
-            return { labels, data };
-        }
-
-        // Create Status Distribution Chart
-        function createStatusChart() {
-            const ctx = document.getElementById('statusChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Normal (95.4%)', 'Warning (3.6%)', 'Critical (0.6%)', 'Offline (0.4%)'],
-                    datasets: [{
-                        data: [1189, 45, 8, 5],
-                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#6b7280'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true
-                            }
-                        }
-                    }
-                }
+        // Set the initial state and handle navigation
+        const sections = document.querySelectorAll('.dashboard-section');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        
+        // Function to show a specific dashboard section
+        function showSection(id) {
+            sections.forEach(section => {
+                section.classList.remove('active');
             });
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(id).classList.add('active');
+            document.querySelector(`.nav-btn[onclick*="${id}"]`).classList.add('active');
         }
+        
+        // Update the timestamp every second
+        function updateTimestamp() {
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('timestamp').textContent = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateTimestamp, 1000);
+        updateTimestamp();
 
-        // Create Update Frequency Chart
-        function createUpdateChart() {
-            const ctx = document.getElementById('updateChart').getContext('2d');
-            const timeData = generateTimeSeriesData(24, 52, 15);
-            
-            new Chart(ctx, {
+        // Data for all charts
+        const chartData = {
+            globalTrends: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                datasets: [{
+                    label: 'Global Compliance Rate (%)',
+                    data: [96.2, 96.5, 97.1, 97.5, 98.0, 98.4, 98.6, 98.9],
+                    borderColor: 'rgb(0, 229, 255)',
+                    backgroundColor: 'rgba(0, 229, 255, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            standardizationProgress: {
+                labels: ['2021', '2022', '2023', '2024', '2025'],
+                datasets: [{
+                    label: 'Standardization %',
+                    data: [65, 78, 85, 90, 92],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.6)',
+                        'rgba(33, 150, 243, 0.6)',
+                        'rgba(255, 193, 7, 0.6)',
+                        'rgba(156, 39, 176, 0.6)',
+                        'rgba(0, 229, 255, 0.6)'
+                    ]
+                }]
+            },
+            harmonizationStatus: {
+                labels: ['Fully Harmonized', 'In Progress', 'Scheduled'],
+                datasets: [{
+                    data: [45, 35, 20],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(33, 150, 243, 0.8)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            predictiveDrift: {
+                labels: ['-8h', '-6h', '-4h', '-2h', 'Now', '+2h', '+4h'],
+                datasets: [{
+                    label: 'Coolant Temp (C)',
+                    data: [305, 306, 307.5, 308, 308.2, 308.5, 309.1],
+                    borderColor: 'rgba(255, 87, 34, 0.8)',
+                    backgroundColor: 'rgba(255, 87, 34, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            confidenceScore: {
+                labels: ['Anomaly Detection', 'Component Failure', 'Efficiency Loss'],
+                datasets: [{
+                    label: 'ML Confidence',
+                    data: [94.2, 89.7, 87.3],
+                    backgroundColor: [
+                        'rgba(0, 229, 255, 0.6)',
+                        'rgba(156, 39, 176, 0.6)',
+                        'rgba(76, 175, 80, 0.6)'
+                    ]
+                }]
+            },
+            collaborationData: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [{
+                    label: 'Data Shared (TB)',
+                    data: [2.5, 3.1, 4.0, 4.6],
+                    borderColor: 'rgba(0, 229, 255, 1)',
+                    backgroundColor: 'rgba(0, 229, 255, 0.3)',
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            projectSuccess: {
+                labels: ['North America', 'Europe', 'Asia', 'South America'],
+                datasets: [{
+                    label: 'Success Rate (%)',
+                    data: [85, 92, 78, 80],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.7)',
+                        'rgba(33, 150, 243, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(255, 87, 34, 0.7)'
+                    ]
+                }]
+            },
+            capacityFactor: {
+                labels: ['PWR', 'BWR', 'CANDU', 'VVER'],
+                datasets: [{
+                    label: 'Capacity Factor (%)',
+                    data: [91.2, 88.9, 87.5, 90.1],
+                    backgroundColor: ['#4caf50', '#2196f3', '#ffc107', '#9c27b0'],
+                    borderColor: '#fff',
+                    borderWidth: 1
+                }]
+            },
+            lcoeComparison: {
+                labels: ['PWR', 'BWR', 'CANDU', 'VVER'],
+                datasets: [{
+                    label: 'LCOE ($/MWh)',
+                    data: [42.10, 45.50, 51.20, 43.80],
+                    backgroundColor: ['#4caf50', '#2196f3', '#ffc107', '#9c27b0'],
+                    borderColor: '#fff',
+                    borderWidth: 1
+                }]
+            }
+        };
+
+        // Function to create and render all charts
+        function createCharts() {
+            // Global Overview Chart
+            new Chart(document.getElementById('globalTrendsChart'), {
                 type: 'line',
-                data: {
-                    labels: timeData.labels,
-                    datasets: [{
-                        label: 'Updates per Hour',
-                        data: timeData.data,
-                        borderColor: '#3c00a0',
-                        backgroundColor: 'rgba(60, 0, 160, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#3c00a0',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }, {
-                        label: 'Target Rate',
-                        data: Array(24).fill(50),
-                        borderColor: '#10b981',
-                        borderDash: [5, 5],
-                        fill: false
-                    }]
-                },
+                data: chartData.globalTrends,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Updates/Hour'
-                            }
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
                         },
                         x: {
-                            title: {
-                                display: true,
-                                text: 'Time (24h)'
-                            }
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
                         }
                     },
                     plugins: {
-                        legend: {
-                            display: true
-                        }
+                        legend: { labels: { color: '#fff' } }
                     }
                 }
             });
-        }
 
-        // Create Performance Radar Chart
-        function createPerformanceChart() {
-            const ctx = document.getElementById('performanceChart').getContext('2d');
-            
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Uptime', 'Response Time', 'Data Quality', 'Update Success', 'Error Rate'],
-                    datasets: [{
-                        label: 'Current Performance',
-                        data: [99.94, 85, 97.2, 98.7, 94],
-                        borderColor: '#3c00a0',
-                        backgroundColor: 'rgba(60, 0, 160, 0.2)',
-                        pointBackgroundColor: '#3c00a0',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }, {
-                        label: 'Target Performance',
-                        data: [99.9, 90, 98, 99, 95],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        pointBackgroundColor: '#10b981',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }]
-                },
+            // Standardization Charts
+            new Chart(document.getElementById('standardizationChart'), {
+                type: 'bar',
+                data: chartData.standardizationProgress,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        r: {
+                        y: {
                             beginAtZero: true,
                             max: 100,
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            },
-                            angleLines: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
                         }
                     },
                     plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+                        legend: { display: false }
                     }
                 }
             });
-        }
 
-        // Create Deviation Analysis Chart
-        function createDeviationChart() {
-            const ctx = document.getElementById('deviationChart').getContext('2d');
-            
-            // Generate deviation data
-            const deviationData = [];
-            const labels = [];
-            for (let i = 0; i < 24; i++) {
-                const hour = i.toString().padStart(2, '0') + ':00';
-                labels.push(hour);
-                deviationData.push({
-                    minor: Math.floor(Math.random() * 20) + 5,
-                    major: Math.floor(Math.random() * 8) + 2,
-                    critical: Math.floor(Math.random() * 3)
-                });
-            }
-            
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Minor Deviations',
-                        data: deviationData.map(d => d.minor),
-                        backgroundColor: '#fbbf24',
-                        stack: 'deviations'
-                    }, {
-                        label: 'Major Deviations',
-                        data: deviationData.map(d => d.major),
-                        backgroundColor: '#f59e0b',
-                        stack: 'deviations'
-                    }, {
-                        label: 'Critical Deviations',
-                        data: deviationData.map(d => d.critical),
-                        backgroundColor: '#ef4444',
-                        stack: 'deviations'
-                    }]
-                },
+            new Chart(document.getElementById('harmonizationChart'), {
+                type: 'doughnut',
+                data: chartData.harmonizationStatus,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    }
+                }
+            });
+
+            // Predictive Analytics Charts
+            new Chart(document.getElementById('predictiveDriftChart'), {
+                type: 'line',
+                data: chartData.predictiveDrift,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Time (Hours)'
-                            }
-                        },
                         y: {
-                            beginAtZero: true,
-                            stacked: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Deviations'
-                            }
+                            beginAtZero: false,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
                         }
                     },
                     plugins: {
-                        legend: {
-                            position: 'top'
+                        legend: { labels: { color: '#fff' } }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('confidenceChart'), {
+                type: 'bar',
+                data: chartData.confidenceScore,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
                         }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // International Collaboration Charts
+            new Chart(document.getElementById('collaborationChart'), {
+                type: 'line',
+                data: chartData.collaborationData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    }
+                }
+            });
+            
+            new Chart(document.getElementById('projectSuccessChart'), {
+                type: 'bar',
+                data: chartData.projectSuccess,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Cross-Reactor Benchmarking Charts
+            new Chart(document.getElementById('capacityChart'), {
+                type: 'bar',
+                data: chartData.capacityFactor,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('lcoeChart'), {
+                type: 'bar',
+                data: chartData.lcoeComparison,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#b3e5fc' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
                     }
                 }
             });
         }
-
-        // Update KPIs with real-time simulation
-        function updateKPIs() {
-            const kpis = {
+        
+        // Call the function to create charts when the page loads
+        window.onload = createCharts;
+    </script>
+</body>
+</html>
